@@ -19,6 +19,7 @@
             padding: 10px;
             font-size: 16px;
             line-height: 1.4;
+            padding-bottom: 120px;
         }
         
         .container {
@@ -90,25 +91,41 @@
             color: #ccc;
         }
         
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
+        .next-up-banner {
+            background: linear-gradient(135deg, #2a4a2a, #1a3a1a);
+            color: #90ff90;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+            border: 1px solid #4a7a4a;
         }
         
-        .nav-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+        .search-box {
+            margin-bottom: 15px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #555;
+            border-radius: 10px;
             margin-bottom: 10px;
+            background: #2a2a2a;
+            color: white;
+            min-height: 50px;
         }
         
-        .jump-controls {
+        .search-box input::placeholder {
+            color: #888;
+        }
+        
+        .search-controls {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 10px;
-            margin-bottom: 10px;
         }
         
         button {
@@ -147,30 +164,44 @@
             background: linear-gradient(135deg, #777, #555);
         }
         
-        .search-box {
+        .nav-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
             margin-bottom: 15px;
         }
         
-        .search-box input {
-            width: 100%;
+        .nav-controls button {
+            padding: 20px 15px;
+            font-size: 18px;
+            min-height: 60px;
+            font-weight: bold;
+        }
+        
+        .jump-controls {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        input[type="number"] {
             padding: 15px;
             font-size: 16px;
             border: 2px solid #555;
             border-radius: 10px;
-            margin-bottom: 10px;
+            width: 100%;
+            text-align: center;
             background: #2a2a2a;
             color: white;
             min-height: 50px;
         }
         
-        .search-box input::placeholder {
-            color: #888;
-        }
-        
-        .search-controls {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 10px;
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #888;
+            box-shadow: 0 0 0 3px rgba(136, 136, 136, 0.2);
         }
         
         .stats {
@@ -199,25 +230,6 @@
         .stat-value {
             font-size: 1.3em;
             font-weight: bold;
-        }
-        
-        input[type="number"] {
-            padding: 15px;
-            font-size: 16px;
-            border: 2px solid #555;
-            border-radius: 10px;
-            width: 100%;
-            text-align: center;
-            background: #2a2a2a;
-            color: white;
-            min-height: 50px;
-        }
-        
-        input[type="number"]:focus,
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #888;
-            box-shadow: 0 0 0 3px rgba(136, 136, 136, 0.2);
         }
         
         .picks-section {
@@ -298,33 +310,35 @@
         
         .quick-actions {
             position: fixed;
-            bottom: 10px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(40, 40, 40, 0.95);
-            border-radius: 25px;
-            padding: 8px;
+            border-radius: 40px;
+            padding: 12px;
             display: flex;
-            gap: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            gap: 12px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
-            border: 1px solid #555;
+            border: 2px solid #555;
         }
         
         .quick-btn {
-            width: 50px;
-            height: 50px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: none;
             background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
             color: white;
-            font-size: 18px;
+            font-size: 24px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             touch-action: manipulation;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
         }
         
         .quick-btn:active {
@@ -332,23 +346,6 @@
             background: linear-gradient(135deg, #5a5a5a, #3a3a3a);
         }
         
-        .next-up-banner {
-            background: linear-gradient(135deg, #2a4a2a, #1a3a1a);
-            color: #90ff90;
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 10px 0;
-            font-weight: bold;
-            border: 1px solid #4a7a4a;
-        }
-        
-        /* Ensure content doesn't get hidden behind floating quick actions */
-        body {
-            padding-bottom: 80px;
-        }
-        
-        /* Hide traditional controls on mobile to save space */
         @media (max-width: 768px) {
             .nav-controls,
             .jump-controls {
@@ -373,12 +370,12 @@
         <div class="current-pick" id="currentPick">
             <h2>CURRENT PICK</h2>
             <div class="pick-number" id="pickNumber">Pick #1</div>
-            <div class="picker-name" id="pickerName">Pat</div>
+            <div class="picker-name" id="pickerName">🍀 Pat</div>
             <div class="trade-info" id="tradeInfo"></div>
         </div>
         
         <div class="next-up-banner">
-            <div>Next Up: <span id="nextUp">Dennis</span></div>
+            <div>Next Up: <span id="nextUp">🍞 Dennis</span></div>
         </div>
         
         <div class="search-box">
@@ -640,11 +637,46 @@
             {pick: 216, round: 18, team: "Tony", trade: "via Pat"}
         ];
 
+        const teamEmojis = {
+            "Pat": "🍀",
+            "Dennis": "🍞", 
+            "Todd": "🏆",
+            "Comrey": "🏞️",
+            "Bones": "🦴",
+            "Matt": "🐍",
+            "Abe": "⚖️",
+            "Brian": "🥩",
+            "Tony": "⛳",
+            "Rick": "🐶",
+            "Steve": "🍺",
+            "Andy": "👑"
+        };
+
+        function getTeamWithEmoji(teamName) {
+            return `${teamEmojis[teamName]} ${teamName}`;
+        }
+
         let currentPickIndex = 0;
 
         function initializeDraft() {
+            // Scroll to top on page load
+            window.scrollTo(0, 0);
+            
+            // Load saved pick position from localStorage
+            const savedPickIndex = localStorage.getItem('draftPickIndex');
+            if (savedPickIndex !== null) {
+                const pickIndex = parseInt(savedPickIndex);
+                if (pickIndex >= 0 && pickIndex < draftData.length) {
+                    currentPickIndex = pickIndex;
+                }
+            }
+            
             renderPicksGrid();
             updateCurrentPick();
+        }
+
+        function savePickPosition() {
+            localStorage.setItem('draftPickIndex', currentPickIndex.toString());
         }
 
         function renderPicksGrid() {
@@ -679,7 +711,7 @@
                         pickDiv.className += ' traded';
                     }
                     
-                    const displayText = `${pick.pick}. ${pick.team}${pick.trade ? ` (${pick.trade})` : ''}`;
+                    const displayText = `${pick.pick}. ${getTeamWithEmoji(pick.team)}${pick.trade ? ` (${pick.trade})` : ''}`;
                     pickDiv.textContent = displayText;
                     
                     pickDiv.onclick = () => {
@@ -698,9 +730,12 @@
         function updateCurrentPick() {
             const pick = draftData[currentPickIndex];
             
+            // Save current position to localStorage
+            savePickPosition();
+            
             // Update current pick display
             document.getElementById('pickNumber').textContent = `Pick #${pick.pick}`;
-            document.getElementById('pickerName').textContent = pick.team;
+            document.getElementById('pickerName').textContent = getTeamWithEmoji(pick.team);
             document.getElementById('tradeInfo').textContent = pick.trade ? `(${pick.trade})` : '';
             
             // Update stats
@@ -710,7 +745,7 @@
             // Update next up
             if (currentPickIndex < draftData.length - 1) {
                 const nextPick = draftData[currentPickIndex + 1];
-                document.getElementById('nextUp').textContent = nextPick.team;
+                document.getElementById('nextUp').textContent = getTeamWithEmoji(nextPick.team);
             } else {
                 document.getElementById('nextUp').textContent = 'Draft Complete!';
             }
@@ -760,8 +795,9 @@
         }
 
         function resetDraft() {
-            if (confirm('Reset draft to the beginning?')) {
+            if (confirm('Reset draft to the beginning? This will clear your saved progress.')) {
                 currentPickIndex = 0;
+                localStorage.removeItem('draftPickIndex'); // Clear saved position
                 updateCurrentPick();
             }
         }
