@@ -2,66 +2,127 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>2025 Draft Tracker</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
+            font-size: 16px;
+            line-height: 1.4;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
             background: rgba(30, 30, 30, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
         }
         
         h1 {
             text-align: center;
             color: #ffffff;
-            margin-bottom: 10px;
-            font-size: 3em;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            margin-bottom: 5px;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             font-weight: 900;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
         
         .subtitle {
             text-align: center;
             color: #888;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        
+        .current-pick {
+            background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            border: 2px solid #666;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+        
+        .current-pick h2 {
             font-size: 1.2em;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+        
+        .pick-number {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin: 8px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            color: #fff;
+        }
+        
+        .picker-name {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 8px 0;
+            color: #fff;
+        }
+        
+        .trade-info {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-top: 8px;
+            font-style: italic;
+            color: #ccc;
         }
         
         .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .jump-controls {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         
         button {
-            padding: 12px 24px;
+            padding: 15px 12px;
             font-size: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            min-height: 50px;
+            touch-action: manipulation;
         }
         
         .nav-btn {
@@ -70,126 +131,153 @@
             border: 1px solid #555;
         }
         
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        .nav-btn:active {
+            transform: scale(0.95);
             background: linear-gradient(135deg, #5a5a5a, #3a3a3a);
         }
         
-        .nav-btn:active {
-            transform: translateY(0);
-        }
-        
         .jump-btn {
-            background: #555;
+            background: linear-gradient(135deg, #666, #444);
             color: white;
-            border: 1px solid #666;
+            border: 1px solid #777;
         }
         
-        .jump-btn:hover {
-            background: #666;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        .jump-btn:active {
+            transform: scale(0.95);
+            background: linear-gradient(135deg, #777, #555);
         }
         
-        .current-pick {
-            background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            animation: pulse 2s infinite;
-            border: 2px solid #666;
+        .search-box {
+            margin-bottom: 15px;
         }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-        
-        .current-pick h2 {
-            font-size: 2em;
+        .search-box input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #555;
+            border-radius: 10px;
             margin-bottom: 10px;
+            background: #2a2a2a;
+            color: white;
+            min-height: 50px;
         }
         
-        .pick-number {
-            font-size: 3em;
-            font-weight: bold;
-            margin: 10px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        .search-box input::placeholder {
+            color: #888;
         }
         
-        .picker-name {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        
-        .trade-info {
-            font-size: 1.2em;
-            opacity: 0.95;
-            margin-top: 10px;
-            font-style: italic;
-        }
-        
-        .picks-grid {
+        .search-controls {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid #555;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        input[type="number"] {
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #555;
+            border-radius: 10px;
+            width: 100%;
+            text-align: center;
+            background: #2a2a2a;
+            color: white;
+            min-height: 50px;
+        }
+        
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #888;
+            box-shadow: 0 0 0 3px rgba(136, 136, 136, 0.2);
+        }
+        
+        .picks-section {
+            margin-top: 20px;
         }
         
         .round-section {
             background: #2a2a2a;
             border-radius: 12px;
             padding: 15px;
+            margin-bottom: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
             border: 1px solid #444;
         }
         
-        .round-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
-        }
-        
         .round-header {
-            font-size: 1.3em;
+            font-size: 1.2em;
             font-weight: bold;
             color: #ccc;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             padding-bottom: 8px;
-            border-bottom: 3px solid #555;
+            border-bottom: 2px solid #555;
+            text-align: center;
+        }
+        
+        .round-picks {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
         }
         
         .pick-item {
-            padding: 8px;
-            margin: 5px 0;
+            padding: 15px;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             cursor: pointer;
             color: #bbb;
+            background: #333;
+            font-size: 16px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            touch-action: manipulation;
         }
         
-        .pick-item:hover {
-            background: #3a3a3a;
-            transform: translateX(5px);
-            color: #fff;
+        .pick-item:active {
+            transform: scale(0.98);
         }
         
         .pick-item.current {
             background: linear-gradient(135deg, #666, #444);
             color: white;
             font-weight: bold;
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
-            border: 1px solid #888;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+            border: 2px solid #888;
         }
         
         .pick-item.completed {
-            opacity: 0.4;
+            opacity: 0.5;
             background: #1a1a1a;
         }
         
@@ -199,77 +287,81 @@
         }
         
         .pick-item.current.traded {
-            background: linear-gradient(135deg, #666, #444);
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-        
-        .stat-card {
-            background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            border: 1px solid #555;
-        }
-        
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-            margin-bottom: 5px;
-        }
-        
-        .stat-value {
-            font-size: 1.8em;
-            font-weight: bold;
-        }
-        
-        input[type="number"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #555;
-            border-radius: 8px;
-            width: 100px;
-            text-align: center;
-            background: #2a2a2a;
-            color: white;
-        }
-        
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #888;
-            box-shadow: 0 0 0 3px rgba(136, 136, 136, 0.2);
-        }
-        
-        .search-box {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .search-box input {
-            padding: 12px 20px;
-            font-size: 16px;
-            border: 2px solid #555;
-            border-radius: 8px;
-            width: 300px;
-            margin-right: 10px;
-            background: #2a2a2a;
-            color: white;
-        }
-        
-        .search-box input::placeholder {
-            color: #888;
+            background: linear-gradient(135deg, #6a6a3a, #4a4a2a);
         }
         
         .highlight {
-            background: #ffff00 !important;
+            background: linear-gradient(135deg, #ffaa00, #ff8800) !important;
             color: black !important;
+            font-weight: bold;
+        }
+        
+        .quick-actions {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(40, 40, 40, 0.95);
+            border-radius: 25px;
+            padding: 8px;
+            display: flex;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid #555;
+        }
+        
+        .quick-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+        
+        .quick-btn:active {
+            transform: scale(0.9);
+            background: linear-gradient(135deg, #5a5a5a, #3a3a3a);
+        }
+        
+        .next-up-banner {
+            background: linear-gradient(135deg, #2a4a2a, #1a3a1a);
+            color: #90ff90;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+            border: 1px solid #4a7a4a;
+        }
+        
+        /* Ensure content doesn't get hidden behind floating quick actions */
+        body {
+            padding-bottom: 80px;
+        }
+        
+        /* Hide traditional controls on mobile to save space */
+        @media (max-width: 768px) {
+            .nav-controls,
+            .jump-controls {
+                display: none;
+            }
+            
+            .search-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-controls button {
+                margin-top: 5px;
+            }
         }
     </style>
 </head>
@@ -278,20 +370,6 @@
         <h1>🏈 NO LIVES MATTER '25</h1>
         <div class="subtitle">Fantasy Football Draft Tracker</div>
         
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search for a manager..." />
-            <button onclick="searchManager()" class="jump-btn">Search</button>
-            <button onclick="clearSearch()" class="nav-btn">Clear</button>
-        </div>
-        
-        <div class="controls">
-            <button onclick="previousPick()" class="nav-btn">⬅ Previous</button>
-            <button onclick="nextPick()" class="nav-btn">Next ➡</button>
-            <input type="number" id="pickInput" min="1" max="216" placeholder="Pick #">
-            <button onclick="jumpToPick()" class="jump-btn">Jump to Pick</button>
-            <button onclick="resetDraft()" class="nav-btn">Reset Draft</button>
-        </div>
-        
         <div class="current-pick" id="currentPick">
             <h2>CURRENT PICK</h2>
             <div class="pick-number" id="pickNumber">Pick #1</div>
@@ -299,22 +377,47 @@
             <div class="trade-info" id="tradeInfo"></div>
         </div>
         
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-label">Current Round</div>
-                <div class="stat-value" id="currentRound">1</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Picks Completed</div>
-                <div class="stat-value" id="completedPicks">0 / 216</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Next Up</div>
-                <div class="stat-value" id="nextUp">Dennis</div>
+        <div class="next-up-banner">
+            <div>Next Up: <span id="nextUp">Dennis</span></div>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for a manager..." />
+            <div class="search-controls">
+                <button onclick="searchManager()" class="jump-btn">Search</button>
+                <button onclick="clearSearch()" class="nav-btn">Clear</button>
             </div>
         </div>
         
-        <div class="picks-grid" id="picksGrid"></div>
+        <div class="nav-controls">
+            <button onclick="previousPick()" class="nav-btn">⬅ Previous</button>
+            <button onclick="nextPick()" class="nav-btn">Next ➡</button>
+        </div>
+        
+        <div class="jump-controls">
+            <input type="number" id="pickInput" min="1" max="216" placeholder="Pick #">
+            <button onclick="jumpToPick()" class="jump-btn">Jump</button>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Round</div>
+                <div class="stat-value" id="currentRound">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completed</div>
+                <div class="stat-value" id="completedPicks">0/216</div>
+            </div>
+        </div>
+        
+        <div class="picks-section" id="picksGrid"></div>
+    </div>
+
+    <!-- Floating Quick Actions for Mobile -->
+    <div class="quick-actions">
+        <button class="quick-btn" onclick="previousPick()" title="Previous Pick">‹</button>
+        <button class="quick-btn" onclick="nextPick()" title="Next Pick">›</button>
+        <button class="quick-btn" onclick="resetDraft()" title="Reset to Start">⟲</button>
     </div>
 
     <script>
@@ -565,6 +668,9 @@
                 headerDiv.textContent = `Round ${round}`;
                 roundDiv.appendChild(headerDiv);
                 
+                const picksContainer = document.createElement('div');
+                picksContainer.className = 'round-picks';
+                
                 rounds[round].forEach(pick => {
                     const pickDiv = document.createElement('div');
                     pickDiv.className = 'pick-item';
@@ -581,9 +687,10 @@
                         updateCurrentPick();
                     };
                     
-                    roundDiv.appendChild(pickDiv);
+                    picksContainer.appendChild(pickDiv);
                 });
                 
+                roundDiv.appendChild(picksContainer);
                 grid.appendChild(roundDiv);
             });
         }
@@ -598,14 +705,14 @@
             
             // Update stats
             document.getElementById('currentRound').textContent = pick.round;
-            document.getElementById('completedPicks').textContent = `${currentPickIndex} / 216`;
+            document.getElementById('completedPicks').textContent = `${currentPickIndex}/${draftData.length}`;
             
             // Update next up
             if (currentPickIndex < draftData.length - 1) {
                 const nextPick = draftData[currentPickIndex + 1];
                 document.getElementById('nextUp').textContent = nextPick.team;
             } else {
-                document.getElementById('nextUp').textContent = 'Draft Complete';
+                document.getElementById('nextUp').textContent = 'Draft Complete!';
             }
             
             // Update visual indicators
@@ -646,19 +753,21 @@
 
         function jumpToPick() {
             const pickNumber = parseInt(document.getElementById('pickInput').value);
-            if (pickNumber >= 1 && pickNumber <= 216) {
+            if (pickNumber >= 1 && pickNumber <= draftData.length) {
                 currentPickIndex = pickNumber - 1;
                 updateCurrentPick();
             }
         }
 
         function resetDraft() {
-            currentPickIndex = 0;
-            updateCurrentPick();
+            if (confirm('Reset draft to the beginning?')) {
+                currentPickIndex = 0;
+                updateCurrentPick();
+            }
         }
 
         function searchManager() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             if (!searchTerm) return;
             
             // Clear previous highlights
@@ -668,12 +777,14 @@
             
             // Find and highlight all picks for this manager
             let firstMatch = null;
+            let matchCount = 0;
             draftData.forEach(pick => {
                 if (pick.team.toLowerCase().includes(searchTerm)) {
                     const el = document.getElementById(`pick-${pick.pick}`);
                     if (el) {
                         el.classList.add('highlight');
                         if (!firstMatch) firstMatch = pick.pick - 1;
+                        matchCount++;
                     }
                 }
             });
@@ -682,6 +793,22 @@
             if (firstMatch !== null) {
                 currentPickIndex = firstMatch;
                 updateCurrentPick();
+                
+                // Show match count feedback
+                const searchInput = document.getElementById('searchInput');
+                const originalPlaceholder = searchInput.placeholder;
+                searchInput.placeholder = `Found ${matchCount} matches`;
+                setTimeout(() => {
+                    searchInput.placeholder = originalPlaceholder;
+                }, 2000);
+            } else {
+                // No matches found feedback
+                const searchInput = document.getElementById('searchInput');
+                const originalPlaceholder = searchInput.placeholder;
+                searchInput.placeholder = 'No matches found';
+                setTimeout(() => {
+                    searchInput.placeholder = originalPlaceholder;
+                }, 2000);
             }
         }
 
@@ -698,15 +825,67 @@
             
             switch(e.key) {
                 case 'ArrowRight':
-                    nextPick();
-                    break;
-                case 'ArrowLeft':
-                    previousPick();
-                    break;
                 case ' ':
                     e.preventDefault();
                     nextPick();
                     break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    previousPick();
+                    break;
+                case 'r':
+                case 'R':
+                    resetDraft();
+                    break;
+            }
+        });
+
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+        const minSwipeDistance = 50;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            if (!touchStartX || !touchStartY) return;
+            
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            
+            const deltaX = touchStartX - touchEndX;
+            const deltaY = touchStartY - touchEndY;
+            
+            // Only trigger if horizontal swipe is dominant
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                if (deltaX > 0) {
+                    // Swipe left - next pick
+                    nextPick();
+                } else {
+                    // Swipe right - previous pick
+                    previousPick();
+                }
+            }
+            
+            touchStartX = 0;
+            touchStartY = 0;
+        });
+
+        // Enter key support for inputs
+        document.getElementById('pickInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                jumpToPick();
+                e.target.blur(); // Hide mobile keyboard
+            }
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchManager();
+                e.target.blur(); // Hide mobile keyboard
             }
         });
 
