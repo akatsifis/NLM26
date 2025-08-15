@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Draft Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-size: 3em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+            color: white;
+            border: 1px solid #555;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, #5a5a5a, #3a3a3a);
+        }
+        
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+        
+        .jump-btn {
+            background: #555;
+            color: white;
+            border: 1px solid #666;
+        }
+        
+        .jump-btn:hover {
+            background: #666;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        }
+        
+        .current-pick {
+            background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            animation: pulse 2s infinite;
+            border: 2px solid #666;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .current-pick h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .pick-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .picker-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .trade-info {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .picks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .round-section {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            border: 1px solid #444;
+        }
+        
+        .round-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .round-header {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ccc;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #555;
+        }
+        
+        .pick-item {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: #bbb;
+        }
+        
+        .pick-item:hover {
+            background: #3a3a3a;
+            transform: translateX(5px);
+            color: #fff;
+        }
+        
+        .pick-item.current {
+            background: linear-gradient(135deg, #666, #444);
+            color: white;
+            font-weight: bold;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+            border: 1px solid #888;
+        }
+        
+        .pick-item.completed {
+            opacity: 0.4;
+            background: #1a1a1a;
+        }
+        
+        .pick-item.traded {
+            background: #3a3a1a;
+            border-left: 4px solid #888;
+        }
+        
+        .pick-item.current.traded {
+            background: linear-gradient(135deg, #666, #444);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid #555;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            width: 100px;
+            text-align: center;
+            background: #2a2a2a;
+            color: white;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #888;
+            box-shadow: 0 0 0 3px rgba(136, 136, 136, 0.2);
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .search-box input {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            width: 300px;
+            margin-right: 10px;
+            background: #2a2a2a;
+            color: white;
+        }
+        
+        .search-box input::placeholder {
+            color: #888;
+        }
+        
+        .highlight {
+            background: #ffff00 !important;
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏈 NO LIVES MATTER '26</h1>
+        <div class="subtitle">Fantasy Football Draft Tracker</div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for a manager..." />
+            <button onclick="searchManager()" class="jump-btn">Search</button>
+            <button onclick="clearSearch()" class="nav-btn">Clear</button>
+        </div>
+        
+        <div class="controls">
+            <button onclick="previousPick()" class="nav-btn">⬅ Previous</button>
+            <button onclick="nextPick()" class="nav-btn">Next ➡</button>
+            <input type="number" id="pickInput" min="1" max="216" placeholder="Pick #">
+            <button onclick="jumpToPick()" class="jump-btn">Jump to Pick</button>
+            <button onclick="resetDraft()" class="nav-btn">Reset Draft</button>
+        </div>
+        
+        <div class="current-pick" id="currentPick">
+            <h2>CURRENT PICK</h2>
+            <div class="pick-number" id="pickNumber">Pick #1</div>
+            <div class="picker-name" id="pickerName">Pat</div>
+            <div class="trade-info" id="tradeInfo"></div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Current Round</div>
+                <div class="stat-value" id="currentRound">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Picks Completed</div>
+                <div class="stat-value" id="completedPicks">0 / 216</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Next Up</div>
+                <div class="stat-value" id="nextUp">Dennis</div>
+            </div>
+        </div>
+        
+        <div class="picks-grid" id="picksGrid"></div>
+    </div>
+
+    <script>
+        const draftData = [
+            {pick: 1, round: 1, team: "Pat", trade: null},
+            {pick: 2, round: 1, team: "Dennis", trade: null},
+            {pick: 3, round: 1, team: "Todd", trade: null},
+            {pick: 4, round: 1, team: "Comrey", trade: null},
+            {pick: 5, round: 1, team: "Bones", trade: null},
+            {pick: 6, round: 1, team: "Matt", trade: null},
+            {pick: 7, round: 1, team: "Abe", trade: null},
+            {pick: 8, round: 1, team: "Brian", trade: null},
+            {pick: 9, round: 1, team: "Todd", trade: "via Tony"},
+            {pick: 10, round: 1, team: "Todd", trade: "via Rick"},
+            {pick: 11, round: 1, team: "Steve", trade: null},
+            {pick: 12, round: 1, team: "Andy", trade: null},
+            {pick: 13, round: 2, team: "Andy", trade: null},
+            {pick: 14, round: 2, team: "Steve", trade: null},
+            {pick: 15, round: 2, team: "Rick", trade: null},
+            {pick: 16, round: 2, team: "Tony", trade: null},
+            {pick: 17, round: 2, team: "Brian", trade: null},
+            {pick: 18, round: 2, team: "Abe", trade: null},
+            {pick: 19, round: 2, team: "Comrey", trade: "via Matt"},
+            {pick: 20, round: 2, team: "Bones", trade: null},
+            {pick: 21, round: 2, team: "Comrey", trade: null},
+            {pick: 22, round: 2, team: "Todd", trade: null},
+            {pick: 23, round: 2, team: "Dennis", trade: null},
+            {pick: 24, round: 2, team: "Pat", trade: null},
+            {pick: 25, round: 3, team: "Pat", trade: null},
+            {pick: 26, round: 3, team: "Dennis", trade: null},
+            {pick: 27, round: 3, team: "Todd", trade: null},
+            {pick: 28, round: 3, team: "Comrey", trade: null},
+            {pick: 29, round: 3, team: "Dennis", trade: "via Bones"},
+            {pick: 30, round: 3, team: "Matt", trade: null},
+            {pick: 31, round: 3, team: "Abe", trade: null},
+            {pick: 32, round: 3, team: "Brian", trade: null},
+            {pick: 33, round: 3, team: "Tony", trade: null},
+            {pick: 34, round: 3, team: "Comrey", trade: "via Rick"},
+            {pick: 35, round: 3, team: "Steve", trade: null},
+            {pick: 36, round: 3, team: "Andy", trade: null},
+            {pick: 37, round: 4, team: "Andy", trade: null},
+            {pick: 38, round: 4, team: "Steve", trade: null},
+            {pick: 39, round: 4, team: "Rick", trade: null},
+            {pick: 40, round: 4, team: "Tony", trade: null},
+            {pick: 41, round: 4, team: "Brian", trade: null},
+            {pick: 42, round: 4, team: "Abe", trade: null},
+            {pick: 43, round: 4, team: "Matt", trade: null},
+            {pick: 44, round: 4, team: "Bones", trade: null},
+            {pick: 45, round: 4, team: "Comrey", trade: null},
+            {pick: 46, round: 4, team: "Todd", trade: null},
+            {pick: 47, round: 4, team: "Dennis", trade: null},
+            {pick: 48, round: 4, team: "Pat", trade: null},
+            {pick: 49, round: 5, team: "Pat", trade: null},
+            {pick: 50, round: 5, team: "Dennis", trade: null},
+            {pick: 51, round: 5, team: "Todd", trade: null},
+            {pick: 52, round: 5, team: "Comrey", trade: null},
+            {pick: 53, round: 5, team: "Todd", trade: "via Bones"},
+            {pick: 54, round: 5, team: "Matt", trade: null},
+            {pick: 55, round: 5, team: "Comrey", trade: "via Abe"},
+            {pick: 56, round: 5, team: "Brian", trade: null},
+            {pick: 57, round: 5, team: "Pat", trade: "via Tony"},
+            {pick: 58, round: 5, team: "Rick", trade: null},
+            {pick: 59, round: 5, team: "Steve", trade: null},
+            {pick: 60, round: 5, team: "Andy", trade: null},
+            {pick: 61, round: 6, team: "Andy", trade: null},
+            {pick: 62, round: 6, team: "Steve", trade: null},
+            {pick: 63, round: 6, team: "Todd", trade: "via Rick"},
+            {pick: 64, round: 6, team: "Dennis", trade: "via Tony"},
+            {pick: 65, round: 6, team: "Brian", trade: null},
+            {pick: 66, round: 6, team: "Abe", trade: null},
+            {pick: 67, round: 6, team: "Matt", trade: null},
+            {pick: 68, round: 6, team: "Bones", trade: null},
+            {pick: 69, round: 6, team: "Comrey", trade: null},
+            {pick: 70, round: 6, team: "Todd", trade: null},
+            {pick: 71, round: 6, team: "Dennis", trade: null},
+            {pick: 72, round: 6, team: "Pat", trade: null},
+            {pick: 73, round: 7, team: "Pat", trade: null},
+            {pick: 74, round: 7, team: "Dennis", trade: null},
+            {pick: 75, round: 7, team: "Todd", trade: null},
+            {pick: 76, round: 7, team: "Comrey", trade: null},
+            {pick: 77, round: 7, team: "Dennis", trade: "via Bones"},
+            {pick: 78, round: 7, team: "Comrey", trade: "via Matt"},
+            {pick: 79, round: 7, team: "Abe", trade: null},
+            {pick: 80, round: 7, team: "Dennis", trade: "via Brian"},
+            {pick: 81, round: 7, team: "Tony", trade: null},
+            {pick: 82, round: 7, team: "Rick", trade: null},
+            {pick: 83, round: 7, team: "Steve", trade: null},
+            {pick: 84, round: 7, team: "Andy", trade: null},
+            {pick: 85, round: 8, team: "Andy", trade: null},
+            {pick: 86, round: 8, team: "Steve", trade: null},
+            {pick: 87, round: 8, team: "Rick", trade: null},
+            {pick: 88, round: 8, team: "Pat", trade: "via Tony"},
+            {pick: 89, round: 8, team: "Brian", trade: null},
+            {pick: 90, round: 8, team: "Abe", trade: null},
+            {pick: 91, round: 8, team: "Matt", trade: null},
+            {pick: 92, round: 8, team: "Bones", trade: null},
+            {pick: 93, round: 8, team: "Matt", trade: "via Comrey"},
+            {pick: 94, round: 8, team: "Todd", trade: null},
+            {pick: 95, round: 8, team: "Dennis", trade: null},
+            {pick: 96, round: 8, team: "Pat", trade: null},
+            {pick: 97, round: 9, team: "Pat", trade: null},
+            {pick: 98, round: 9, team: "Dennis", trade: null},
+            {pick: 99, round: 9, team: "Todd", trade: null},
+            {pick: 100, round: 9, team: "Comrey", trade: null},
+            {pick: 101, round: 9, team: "Pat", trade: "via Bones"},
+            {pick: 102, round: 9, team: "Matt", trade: null},
+            {pick: 103, round: 9, team: "Abe", trade: null},
+            {pick: 104, round: 9, team: "Dennis", trade: "via Brian"},
+            {pick: 105, round: 9, team: "Todd", trade: "via Tony"},
+            {pick: 106, round: 9, team: "Rick", trade: null},
+            {pick: 107, round: 9, team: "Steve", trade: null},
+            {pick: 108, round: 9, team: "Andy", trade: null},
+            {pick: 109, round: 10, team: "Andy", trade: null},
+            {pick: 110, round: 10, team: "Steve", trade: null},
+            {pick: 111, round: 10, team: "Rick", trade: null},
+            {pick: 112, round: 10, team: "Tony", trade: null},
+            {pick: 113, round: 10, team: "Brian", trade: null},
+            {pick: 114, round: 10, team: "Abe", trade: null},
+            {pick: 115, round: 10, team: "Matt", trade: null},
+            {pick: 116, round: 10, team: "Bones", trade: null},
+            {pick: 117, round: 10, team: "Comrey", trade: null},
+            {pick: 118, round: 10, team: "Todd", trade: null},
+            {pick: 119, round: 10, team: "Dennis", trade: null},
+            {pick: 120, round: 10, team: "Pat", trade: null},
+            {pick: 121, round: 11, team: "Pat", trade: null},
+            {pick: 122, round: 11, team: "Dennis", trade: null},
+            {pick: 123, round: 11, team: "Todd", trade: null},
+            {pick: 124, round: 11, team: "Comrey", trade: null},
+            {pick: 125, round: 11, team: "Bones", trade: null},
+            {pick: 126, round: 11, team: "Matt", trade: null},
+            {pick: 127, round: 11, team: "Abe", trade: null},
+            {pick: 128, round: 11, team: "Brian", trade: null},
+            {pick: 129, round: 11, team: "Tony", trade: null},
+            {pick: 130, round: 11, team: "Rick", trade: null},
+            {pick: 131, round: 11, team: "Steve", trade: null},
+            {pick: 132, round: 11, team: "Andy", trade: null},
+            {pick: 133, round: 12, team: "Andy", trade: null},
+            {pick: 134, round: 12, team: "Steve", trade: null},
+            {pick: 135, round: 12, team: "Rick", trade: null},
+            {pick: 136, round: 12, team: "Tony", trade: null},
+            {pick: 137, round: 12, team: "Brian", trade: null},
+            {pick: 138, round: 12, team: "Abe", trade: null},
+            {pick: 139, round: 12, team: "Matt", trade: null},
+            {pick: 140, round: 12, team: "Bones", trade: null},
+            {pick: 141, round: 12, team: "Comrey", trade: null},
+            {pick: 142, round: 12, team: "Todd", trade: null},
+            {pick: 143, round: 12, team: "Dennis", trade: null},
+            {pick: 144, round: 12, team: "Pat", trade: null},
+            {pick: 145, round: 13, team: "Pat", trade: null},
+            {pick: 146, round: 13, team: "Dennis", trade: null},
+            {pick: 147, round: 13, team: "Todd", trade: null},
+            {pick: 148, round: 13, team: "Matt", trade: "via Comrey"},
+            {pick: 149, round: 13, team: "Bones", trade: null},
+            {pick: 150, round: 13, team: "Matt", trade: null},
+            {pick: 151, round: 13, team: "Pat", trade: "via Abe"},
+            {pick: 152, round: 13, team: "Brian", trade: null},
+            {pick: 153, round: 13, team: "Tony", trade: null},
+            {pick: 154, round: 13, team: "Rick", trade: null},
+            {pick: 155, round: 13, team: "Steve", trade: null},
+            {pick: 156, round: 13, team: "Andy", trade: null},
+            {pick: 157, round: 14, team: "Andy", trade: null},
+            {pick: 158, round: 14, team: "Steve", trade: null},
+            {pick: 159, round: 14, team: "Rick", trade: null},
+            {pick: 160, round: 14, team: "Tony", trade: null},
+            {pick: 161, round: 14, team: "Brian", trade: null},
+            {pick: 162, round: 14, team: "Abe", trade: null},
+            {pick: 163, round: 14, team: "Matt", trade: null},
+            {pick: 164, round: 14, team: "Bones", trade: null},
+            {pick: 165, round: 14, team: "Comrey", trade: null},
+            {pick: 166, round: 14, team: "Bones", trade: "via Todd"},
+            {pick: 167, round: 14, team: "Tony", trade: "via Dennis"},
+            {pick: 168, round: 14, team: "Bones", trade: "via Pat"},
+            {pick: 169, round: 15, team: "Pat", trade: null},
+            {pick: 170, round: 15, team: "Bones", trade: "via Dennis"},
+            {pick: 171, round: 15, team: "Rick", trade: "via Todd"},
+            {pick: 172, round: 15, team: "Comrey", trade: null},
+            {pick: 173, round: 15, team: "Bones", trade: null},
+            {pick: 174, round: 15, team: "Matt", trade: null},
+            {pick: 175, round: 15, team: "Abe", trade: null},
+            {pick: 176, round: 15, team: "Brian", trade: null},
+            {pick: 177, round: 15, team: "Tony", trade: null},
+            {pick: 178, round: 15, team: "Rick", trade: null},
+            {pick: 179, round: 15, team: "Steve", trade: null},
+            {pick: 180, round: 15, team: "Andy", trade: null},
+            {pick: 181, round: 16, team: "Andy", trade: null},
+            {pick: 182, round: 16, team: "Abe", trade: "via Steve"},
+            {pick: 183, round: 16, team: "Rick", trade: null},
+            {pick: 184, round: 16, team: "Tony", trade: null},
+            {pick: 185, round: 16, team: "Brian", trade: null},
+            {pick: 186, round: 16, team: "Abe", trade: null},
+            {pick: 187, round: 16, team: "Matt", trade: null},
+            {pick: 188, round: 16, team: "Bones", trade: null},
+            {pick: 189, round: 16, team: "Rick", trade: "via Comrey"},
+            {pick: 190, round: 16, team: "Tony", trade: "via Todd"},
+            {pick: 191, round: 16, team: "Brian", trade: "via Dennis"},
+            {pick: 192, round: 16, team: "Tony", trade: "via Pat"},
+            {pick: 193, round: 17, team: "Abe", trade: "via Pat"},
+            {pick: 194, round: 17, team: "Brian", trade: "via Dennis"},
+            {pick: 195, round: 17, team: "Tony", trade: "via Todd"},
+            {pick: 196, round: 17, team: "Abe", trade: "via Comrey"},
+            {pick: 197, round: 17, team: "Bones", trade: null},
+            {pick: 198, round: 17, team: "Matt", trade: null},
+            {pick: 199, round: 17, team: "Abe", trade: null},
+            {pick: 200, round: 17, team: "Brian", trade: null},
+            {pick: 201, round: 17, team: "Tony", trade: null},
+            {pick: 202, round: 17, team: "Rick", trade: null},
+            {pick: 203, round: 17, team: "Steve", trade: null},
+            {pick: 204, round: 17, team: "Andy", trade: null},
+            {pick: 205, round: 18, team: "Andy", trade: null},
+            {pick: 206, round: 18, team: "Steve", trade: null},
+            {pick: 207, round: 18, team: "Rick", trade: null},
+            {pick: 208, round: 18, team: "Tony", trade: null},
+            {pick: 209, round: 18, team: "Brian", trade: null},
+            {pick: 210, round: 18, team: "Steve", trade: "via Abe"},
+            {pick: 211, round: 18, team: "Matt", trade: null},
+            {pick: 212, round: 18, team: "Bones", trade: null},
+            {pick: 213, round: 18, team: "Comrey", trade: null},
+            {pick: 214, round: 18, team: "Rick", trade: "via Todd"},
+            {pick: 215, round: 18, team: "Bones", trade: "via Dennis"},
+            {pick: 216, round: 18, team: "Tony", trade: "via Pat"}
+        ];
+
+        let currentPickIndex = 0;
+
+        function initializeDraft() {
+            renderPicksGrid();
+            updateCurrentPick();
+        }
+
+        function renderPicksGrid() {
+            const grid = document.getElementById('picksGrid');
+            grid.innerHTML = '';
+            
+            const rounds = {};
+            draftData.forEach(pick => {
+                if (!rounds[pick.round]) {
+                    rounds[pick.round] = [];
+                }
+                rounds[pick.round].push(pick);
+            });
+            
+            Object.keys(rounds).forEach(round => {
+                const roundDiv = document.createElement('div');
+                roundDiv.className = 'round-section';
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'round-header';
+                headerDiv.textContent = `Round ${round}`;
+                roundDiv.appendChild(headerDiv);
+                
+                rounds[round].forEach(pick => {
+                    const pickDiv = document.createElement('div');
+                    pickDiv.className = 'pick-item';
+                    pickDiv.id = `pick-${pick.pick}`;
+                    if (pick.trade) {
+                        pickDiv.className += ' traded';
+                    }
+                    
+                    const displayText = `${pick.pick}. ${pick.team}${pick.trade ? ` (${pick.trade})` : ''}`;
+                    pickDiv.textContent = displayText;
+                    
+                    pickDiv.onclick = () => {
+                        currentPickIndex = pick.pick - 1;
+                        updateCurrentPick();
+                    };
+                    
+                    roundDiv.appendChild(pickDiv);
+                });
+                
+                grid.appendChild(roundDiv);
+            });
+        }
+
+        function updateCurrentPick() {
+            const pick = draftData[currentPickIndex];
+            
+            // Update current pick display
+            document.getElementById('pickNumber').textContent = `Pick #${pick.pick}`;
+            document.getElementById('pickerName').textContent = pick.team;
+            document.getElementById('tradeInfo').textContent = pick.trade ? `(${pick.trade})` : '';
+            
+            // Update stats
+            document.getElementById('currentRound').textContent = pick.round;
+            document.getElementById('completedPicks').textContent = `${currentPickIndex} / 216`;
+            
+            // Update next up
+            if (currentPickIndex < draftData.length - 1) {
+                const nextPick = draftData[currentPickIndex + 1];
+                document.getElementById('nextUp').textContent = nextPick.team;
+            } else {
+                document.getElementById('nextUp').textContent = 'Draft Complete';
+            }
+            
+            // Update visual indicators
+            document.querySelectorAll('.pick-item').forEach(el => {
+                el.classList.remove('current', 'completed');
+            });
+            
+            // Mark completed picks
+            for (let i = 0; i < currentPickIndex; i++) {
+                const el = document.getElementById(`pick-${draftData[i].pick}`);
+                if (el) el.classList.add('completed');
+            }
+            
+            // Mark current pick
+            const currentEl = document.getElementById(`pick-${pick.pick}`);
+            if (currentEl) {
+                currentEl.classList.add('current');
+                currentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            // Update input field
+            document.getElementById('pickInput').value = pick.pick;
+        }
+
+        function nextPick() {
+            if (currentPickIndex < draftData.length - 1) {
+                currentPickIndex++;
+                updateCurrentPick();
+            }
+        }
+
+        function previousPick() {
+            if (currentPickIndex > 0) {
+                currentPickIndex--;
+                updateCurrentPick();
+            }
+        }
+
+        function jumpToPick() {
+            const pickNumber = parseInt(document.getElementById('pickInput').value);
+            if (pickNumber >= 1 && pickNumber <= 216) {
+                currentPickIndex = pickNumber - 1;
+                updateCurrentPick();
+            }
+        }
+
+        function resetDraft() {
+            currentPickIndex = 0;
+            updateCurrentPick();
+        }
+
+        function searchManager() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (!searchTerm) return;
+            
+            // Clear previous highlights
+            document.querySelectorAll('.highlight').forEach(el => {
+                el.classList.remove('highlight');
+            });
+            
+            // Find and highlight all picks for this manager
+            let firstMatch = null;
+            draftData.forEach(pick => {
+                if (pick.team.toLowerCase().includes(searchTerm)) {
+                    const el = document.getElementById(`pick-${pick.pick}`);
+                    if (el) {
+                        el.classList.add('highlight');
+                        if (!firstMatch) firstMatch = pick.pick - 1;
+                    }
+                }
+            });
+            
+            // Jump to first match
+            if (firstMatch !== null) {
+                currentPickIndex = firstMatch;
+                updateCurrentPick();
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.highlight').forEach(el => {
+                el.classList.remove('highlight');
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            
+            switch(e.key) {
+                case 'ArrowRight':
+                    nextPick();
+                    break;
+                case 'ArrowLeft':
+                    previousPick();
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    nextPick();
+                    break;
+            }
+        });
+
+        // Initialize on load
+        initializeDraft();
+    </script>
+</body>
+</html>
